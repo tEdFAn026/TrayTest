@@ -48,6 +48,7 @@ public:
 	CTrayIconMgr(void);
 	~CTrayIconMgr(void);
 
+	BOOL IsWow64();
 	BOOL ListTrayIcons();
 
 	TrayIconState& GetTrayIcon(IN int iItem);

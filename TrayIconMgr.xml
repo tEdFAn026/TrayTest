@@ -1,3 +1,129 @@
 <?xml version="1.0" encoding="GB2312" standalone="yes"?>
 <TrayIconStates>
+  <TrayIconState>
+    <path>C:\Users\tEdFAn\AppData\Local\Microsoft\OneDrive\OneDrive.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x0B151417</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\SS\ShadowSocks2\Shadowsocks1.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x02C815C5</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\SS\ShadowSocks\Shadowsocks1.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x095E1553</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files (x86)\xiamiMusic\XiamiMusic.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x1D820E0D</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x0A950AC5</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\WindowsApps\Microsoft.SkypeApp_14.44.40.0_x64__kzf8qxf38zg5c\SkypeBridge\SkypeBridge.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x1AAB17B1</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files (x86)\Tencent\WeChat\WeChat.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x03930C05</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files (x86)\Internet Download Manager\IDMan.exe</path>
+    <tips>?6</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0xBD1E0B5F</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\Logitech Gaming Software\LCore.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x09B71381</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\Synaptics\SynTP\SynTPEnh.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x0EAD158B</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Windows\System32\DriverStore\FileRepository\igdlh64.inf_amd64_0541b698fc6e40b0\igfxEM.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x16F41705</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\Google\Drive\googledrivesync.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x057E1521</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Windows\System32\Taskmgr.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x7A7F0F79</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
+  <TrayIconState>
+    <path>C:\Program Files\Windows Defender\MSASCuiL.exe</path>
+    <tips>?</tips>
+    <bShow>True</bShow>
+    <hWnd>0xCCCCCCCC</hWnd>
+    <hIcon>0x84950F01</hIcon>
+    <uID>0xCCCCCCCC</uID>
+    <uCallbackMessage>0xCCCCCCCC</uCallbackMessage>
+  </TrayIconState>
 </TrayIconStates>

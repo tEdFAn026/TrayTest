@@ -6,6 +6,8 @@
 
 #include "Markup.h"
 
+typedef BOOL(WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+
 CTrayIconMgr::CTrayIconMgr(void)
 {
 	m_TrayIconStateArray.RemoveAll();
@@ -63,6 +65,24 @@ void CTrayIconMgr::x_ListProcesses()
 	}
 }
 
+BOOL CTrayIconMgr::IsWow64()
+{
+	BOOL bIsWow64 = FALSE;
+
+	LPFN_ISWOW64PROCESS
+		fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
+			GetModuleHandle(_T("kernel32")), "IsWow64Process");
+
+	if (NULL != fnIsWow64Process)
+	{
+		if (!fnIsWow64Process(GetCurrentProcess(), &bIsWow64))
+		{
+			// handle error
+		}
+	}
+	return bIsWow64;
+}
+
 BOOL CTrayIconMgr::ListTrayIcons()
 {
 	x_ListProcesses();
@@ -74,20 +94,41 @@ BOOL CTrayIconMgr::ListTrayIcons()
 	}
 
 	HANDLE hProcess=OpenProcess(PROCESS_ALL_ACCESS,FALSE,x_GetWndProcessId(hToolbarWindow32));
+	if (hProcess == NULL) {
+		return FALSE;
+	}
+
+	int nDataOffset = sizeof(TBBUTTON) - sizeof(INT_PTR) - sizeof(DWORD_PTR);
+	int nStrOffset = 18;
+	if (IsWow64()) {
+		nDataOffset += 4;
+		nStrOffset += 6;
+	}
+
 	LPVOID lpButton=VirtualAllocEx(hProcess,NULL,sizeof(TBBUTTON),MEM_COMMIT, PAGE_READWRITE);
 
 	TCHAR szTips[1024];
 	TCHAR szPath[MAX_PATH];
 	TBBUTTON TButton;
 	TRAYDATA TrayData;
+	DWORD lTextAdr = 0;
 	DWORD dwCount=::SendMessage(hToolbarWindow32, TB_BUTTONCOUNT, NULL, NULL);
 	for (DWORD i = 0; i < dwCount; i++)
 	{
 		::SendMessage(hToolbarWindow32, TB_GETBUTTON, i, (LPARAM)lpButton);
+		::ReadProcessMemory(hProcess, (LPVOID)((DWORD)lpButton + nDataOffset), &lTextAdr, 4, 0);
 		::ReadProcessMemory(hProcess, lpButton, &TButton, sizeof(TBBUTTON), NULL);
 		::ReadProcessMemory(hProcess, (LPVOID)TButton.dwData, &TrayData, sizeof(TRAYDATA), NULL);
 		::ReadProcessMemory(hProcess, (LPVOID)TButton.iString, szTips, 1024, NULL);
-		HANDLE hProcessTmp=OpenProcess(PROCESS_ALL_ACCESS,FALSE,x_GetWndProcessId(TrayData.hWnd));
+		if (lTextAdr == -1)
+			continue;
+		CString strFilePath;
+		CString strTile;
+		HWND hMainWnd = NULL;
+		BYTE buff[1024] = { 0 };
+		ReadProcessMemory(hProcess, (LPCVOID)lTextAdr, buff, 1024, 0);
+		hMainWnd = (HWND)(*((DWORD*)buff));
+		HANDLE hProcessTmp=OpenProcess(PROCESS_ALL_ACCESS,FALSE,x_GetWndProcessId(hMainWnd));
 		if (hProcessTmp==NULL)
 		{
 			continue;
@@ -95,11 +136,23 @@ BOOL CTrayIconMgr::ListTrayIcons()
 		GetModuleFileNameEx(hProcessTmp,NULL,szPath,MAX_PATH);
 		CloseHandle(hProcessTmp);
 
+
+		//CString strFilePath;
+		//CString strTile;
+		//BYTE buff[1024] = { 0 };
+		//ReadProcessMemory(hProcess, (LPCVOID)lTextAdr, buff, 1024, 0);
+		////hMainWnd = (HWND)(*((DWORD*)buff));
+		//strFilePath = (WCHAR *)buff + nStrOffset;
+		//wsprintf(szPath, _T("%s"), strFilePath);
+		////strTile = (WCHAR *)buff + nStrOffset + MAX_PATH;
+
+		OutputDebugString(szPath);
+
 		HICON hIcon=NULL;
 		ICONINFO iconinfo;
-		if(GetIconInfo(TrayData.hIcon,&iconinfo)!=0)
+		if (GetIconInfo(TrayData.hIcon, &iconinfo) != 0)
 		{
-			hIcon=TrayData.hIcon;
+			hIcon = TrayData.hIcon;
 		}
 		else
 		{
@@ -130,7 +183,7 @@ BOOL CTrayIconMgr::ListTrayIcons()
 		}
 	}
 
-	::VirtualFreeEx(hProcess, lpButton, sizeof(TBBUTTON), MEM_FREE);
+	::VirtualFreeEx(hProcess, lpButton, sizeof(TBBUTTON), MEM_RELEASE);
 	CloseHandle(hProcess);
 
 	x_DeleteInValidIcon();
