@@ -124,6 +124,9 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 			}
 
 			if (currInfo.strName.MakeLower().Left(wcslen(currInfo.strName) - 4) ==_T("xiamimusic")) {
+				HICON _nerIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
+				memcpy(((DWORD*)buff + 6), &_nerIcon, sizeof(_nerIcon));
+				::WriteProcessMemory(hProcess, (LPVOID)lTextAdr, buff, 1024, 0);
 				Shell_NotifyIcon(NIM_DELETE, &currInfo.nid);
 				//currInfo.nid.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
 				//Shell_NotifyIcon(NIM_ADD, &currInfo.nid);
