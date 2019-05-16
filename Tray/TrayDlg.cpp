@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CTrayDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -107,6 +108,8 @@ BOOL CTrayDlg::OnInitDialog()
 
 	m_tr.EnumNotifyWindow();
 	m_tr.ShowTray(&m_TrayListCtrl);
+
+	SetTimer(0, 1000, NULL);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -157,4 +160,13 @@ void CTrayDlg::OnPaint()
 HCURSOR CTrayDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
+}
+
+void CTrayDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: Add your message handler code here and/or call default
+	m_tr.EnumNotifyWindow();
+	m_tr.ShowTray(&m_TrayListCtrl);
+
+	CDialogEx::OnTimer(nIDEvent);
 }

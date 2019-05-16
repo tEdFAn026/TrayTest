@@ -53,6 +53,8 @@ DWORD TrayMgr::GetWndProcessId(HWND hWnd)
 
 void TrayMgr::EnumNotifyWindow(HWND hWnd)
 {
+	m_TrayInfoArray.RemoveAll();
+
 	HANDLE hProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, GetWndProcessId(hWnd));
 	if (hProcess == NULL) {
 		return;
@@ -98,6 +100,11 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 				GetModuleFileNameEx(hProcessTmp, NULL, (LPWSTR)(LPCWSTR)currInfo.strFilePath, MAX_PATH);
 				CloseHandle(hProcessTmp);
 			}
+			else 
+			{
+				int err = GetLastError();
+				OutputDebugString(currInfo.strFilePath);
+			}
 			
 
 			ICONINFO iconinfo;
@@ -110,7 +117,7 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 				else
 					currInfo.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
 			}
- 			OutputDebugString(currInfo.strFilePath);
+
 			m_TrayInfoArray.Add(currInfo);
 		}
 		
@@ -122,7 +129,9 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 
 void TrayMgr::ShowTray(CListCtrl* pListCtrl)
 {
+	pListCtrl->DeleteAllItems();
 	static CImageList imgList;
+	imgList.DeleteImageList();
 	imgList.Create(16, 16, ILC_COLOR24, 16, 16);
 	pListCtrl->SetImageList(&imgList, LVSIL_SMALL);
 

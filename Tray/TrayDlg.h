@@ -35,4 +35,6 @@ protected:
 private:
 	TrayMgr m_tr;
 	CListCtrl m_TrayListCtrl;
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
