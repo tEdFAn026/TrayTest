@@ -67,7 +67,7 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 	DWORD lTextAdr = 0;
 	BYTE buff[1024] = { 0 };
 	TCHAR ptb[256] = { 0 };
-	HWND hMainWnd = NULL;
+	//HWND hMainWnd = NULL;
 	STrayInfo currInfo;
 	//RECT rccc;
 	int nDataOffset = sizeof(TBBUTTON) - sizeof(INT_PTR) - sizeof(DWORD_PTR);
@@ -87,14 +87,17 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 		if (lTextAdr != -1) {
 			//读文本,得到TRAYDATA的地址
 			::ReadProcessMemory(hProcess, (LPCVOID)lTextAdr, buff, 1024, 0);
-			hMainWnd = (HWND)(*((DWORD*)buff));
+			//hMainWnd = (HWND)(*((DWORD*)buff));
 			currInfo.strFilePath = (WCHAR *)buff + nStrOffset;
-			currInfo.strTitle = (WCHAR *)buff + nStrOffset + MAX_PATH;
-			currInfo.hIcon = (HICON)(*((DWORD*)buff + 6));
-			//uID = (UINT)(*((UINT*)buff + 1));
-			//uCallbackMessage = (UINT)(*((DWORD*)buff + 2));
+			currInfo.nid.cbSize = (DWORD)sizeof(NOTIFYICONDATA);
+			currInfo.nid.hWnd = (HWND)(*((DWORD*)buff));
+			currInfo.nid.uID = (UINT)(*((UINT*)buff + 1));
+			currInfo.nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+			currInfo.nid.uCallbackMessage = (UINT)(*((DWORD*)buff + 2));
+			currInfo.nid.hIcon = (HICON)(*((DWORD*)buff + 6));
+			memcpy(currInfo.nid.szTip, (WCHAR *)buff + nStrOffset + MAX_PATH, sizeof(currInfo.nid.szTip));
 
-			HANDLE hProcessTmp = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetWndProcessId(hMainWnd));
+			HANDLE hProcessTmp = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetWndProcessId(currInfo.nid.hWnd));
 			if (hProcessTmp != NULL)
 			{
 				GetModuleFileNameEx(hProcessTmp, NULL, (LPWSTR)(LPCWSTR)currInfo.strFilePath, MAX_PATH);
@@ -105,17 +108,25 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 				int err = GetLastError();
 				OutputDebugString(currInfo.strFilePath);
 			}
-			
+
+			currInfo.strName = currInfo.strFilePath; 
+			currInfo.strName.Delete(0, currInfo.strFilePath.ReverseFind(L'\\') + 1);
 
 			ICONINFO iconinfo;
-			if (GetIconInfo(currInfo.hIcon, &iconinfo) == 0)
+			if (GetIconInfo(currInfo.nid.hIcon, &iconinfo) == 0)
 			{
 				SHFILEINFO SFI;
 				SHGetFileInfo(currInfo.strFilePath, 0, &SFI, sizeof(SFI), SHGFI_SMALLICON | SHGFI_ICON);
 				if (SFI.hIcon != NULL)
-					currInfo.hIcon = SFI.hIcon;
+					currInfo.nid.hIcon = SFI.hIcon;
 				else
-					currInfo.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
+					currInfo.nid.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
+			}
+
+			if (currInfo.strName.MakeLower().Left(wcslen(currInfo.strName) - 4) ==_T("xiamimusic")) {
+				Shell_NotifyIcon(NIM_DELETE, &currInfo.nid);
+				//currInfo.nid.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
+				//Shell_NotifyIcon(NIM_ADD, &currInfo.nid);
 			}
 
 			m_TrayInfoArray.Add(currInfo);
@@ -140,8 +151,8 @@ void TrayMgr::ShowTray(CListCtrl* pListCtrl)
 		CString strTemp;
 		strTemp.Format(L"%d", i);
 		pListCtrl->InsertItem(i, strTemp, i);
-		imgList.Add(m_TrayInfoArray.GetAt(i).hIcon);
+		imgList.Add(m_TrayInfoArray.GetAt(i).nid.hIcon);
 		pListCtrl->SetItemText(i, 1, m_TrayInfoArray.GetAt(i).strFilePath);
-		pListCtrl->SetItemText(i, 2, m_TrayInfoArray.GetAt(i).strTitle);
+		pListCtrl->SetItemText(i, 2, m_TrayInfoArray.GetAt(i).nid.szTip);
 	}
 }

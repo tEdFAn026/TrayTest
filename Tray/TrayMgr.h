@@ -4,9 +4,9 @@ class TrayMgr
 private:
 	struct STrayInfo
 	{
-		HICON hIcon;
-		CString strTitle;
+		CString strName;
 		CString strFilePath;
+		NOTIFYICONDATA nid;
 	};
 
 private:

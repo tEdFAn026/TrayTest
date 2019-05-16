@@ -165,8 +165,8 @@ HCURSOR CTrayDlg::OnQueryDragIcon()
 void CTrayDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
-	m_tr.EnumNotifyWindow();
-	m_tr.ShowTray(&m_TrayListCtrl);
+	//m_tr.EnumNotifyWindow();
+	//m_tr.ShowTray(&m_TrayListCtrl);
 
 	CDialogEx::OnTimer(nIDEvent);
 }
