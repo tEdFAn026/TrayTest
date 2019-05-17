@@ -51,6 +51,7 @@ END_MESSAGE_MAP()
 
 CTrayDlg::CTrayDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_TRAY_DIALOG, pParent)
+	, m_iID(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -59,6 +60,7 @@ void CTrayDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST2, m_TrayListCtrl);
+	DDX_Text(pDX, IDC_EDIT_NAME, m_iID);
 }
 
 BEGIN_MESSAGE_MAP(CTrayDlg, CDialogEx)
@@ -66,6 +68,9 @@ BEGIN_MESSAGE_MAP(CTrayDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CTrayDlg::OnBnClickedButtonRefresh)
+	ON_BN_CLICKED(IDC_BUTTON_ADD, &CTrayDlg::OnBnClickedButtonAdd)
+	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CTrayDlg::OnBnClickedButtonDelete)
 END_MESSAGE_MAP()
 
 
@@ -169,4 +174,28 @@ void CTrayDlg::OnTimer(UINT_PTR nIDEvent)
 	//m_tr.ShowTray(&m_TrayListCtrl);
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void CTrayDlg::OnBnClickedButtonRefresh()
+{
+	// TODO: Add your control notification handler code here
+	m_tr.EnumNotifyWindow();
+	m_tr.ShowTray(&m_TrayListCtrl);
+}
+
+
+void CTrayDlg::OnBnClickedButtonAdd()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData();
+	m_tr.AddBtn(m_iID);
+}
+
+
+void CTrayDlg::OnBnClickedButtonDelete()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData();
+	m_tr.DeleteBtn(m_iID);
 }

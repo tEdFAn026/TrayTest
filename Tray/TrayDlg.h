@@ -37,4 +37,8 @@ private:
 	CListCtrl m_TrayListCtrl;
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedButtonRefresh();
+	afx_msg void OnBnClickedButtonAdd();
+	afx_msg void OnBnClickedButtonDelete();
+	int m_iID;
 };

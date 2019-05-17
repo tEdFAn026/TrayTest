@@ -53,6 +53,7 @@ DWORD TrayMgr::GetWndProcessId(HWND hWnd)
 
 void TrayMgr::EnumNotifyWindow(HWND hWnd)
 {
+	m_hToolbarWindow32 = hWnd;
 	m_TrayInfoArray.RemoveAll();
 
 	HANDLE hProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, GetWndProcessId(hWnd));
@@ -123,13 +124,22 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 					currInfo.nid.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
 			}
 
-			if (currInfo.strName.MakeLower().Left(wcslen(currInfo.strName) - 4) ==_T("xiamimusic")) {
+			if (currInfo.strName.MakeLower().Left(wcslen(currInfo.strName) - 4) == _T("whatsapptray")) {
 				HICON _nerIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
 				memcpy(((DWORD*)buff + 6), &_nerIcon, sizeof(_nerIcon));
-				::WriteProcessMemory(hProcess, (LPVOID)lTextAdr, buff, 1024, 0);
-				Shell_NotifyIcon(NIM_DELETE, &currInfo.nid);
-				//currInfo.nid.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
-				//Shell_NotifyIcon(NIM_ADD, &currInfo.nid);
+				DWORD dwNumberOfBytesRead;
+				int write_ = ::WriteProcessMemory(hProcess, (LPVOID)lTextAdr, buff, 1024, &dwNumberOfBytesRead);	//写入内存
+				if (write_ == 0) {
+					MessageBox(hWnd, L"写入内存值失败!", NULL, 0);
+				}
+				else ::SendMessage(m_hToolbarWindow32, WM_PAINT, 0, 0);
+
+				if (Shell_NotifyIcon(NIM_DELETE, &currInfo.nid)) {
+					currInfo.nid.hIcon = (HICON)LoadIcon(NULL, IDI_ERROR);
+					Shell_NotifyIcon(NIM_ADD, &currInfo.nid);
+				}
+				else
+					MessageBox(hWnd, L"change icon failed!", NULL, 0);
 			}
 
 			m_TrayInfoArray.Add(currInfo);
@@ -158,4 +168,40 @@ void TrayMgr::ShowTray(CListCtrl* pListCtrl)
 		pListCtrl->SetItemText(i, 1, m_TrayInfoArray.GetAt(i).strFilePath);
 		pListCtrl->SetItemText(i, 2, m_TrayInfoArray.GetAt(i).nid.szTip);
 	}
+}
+
+void TrayMgr::AddBtn(int iID)
+{
+	if (!m_hToolbarWindow32)
+		return;
+
+	HANDLE hProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, GetWndProcessId(m_hToolbarWindow32));
+	if (hProcess == NULL) {
+		return;
+	}
+
+	LPVOID lAddress = VirtualAllocEx(hProcess, 0, 4096, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	if (lAddress == NULL) {
+		return;
+	}
+
+	TBBUTTON newBtn;
+	::SendMessage(m_hToolbarWindow32, TB_GETBUTTON, iID, (LPARAM)&lAddress);
+	memcpy(&newBtn, (TBBUTTON*)&lAddress, sizeof(TBBUTTON));
+
+	TBBUTTON button[] = { newBtn };
+	::SendMessage(m_hToolbarWindow32, TB_ADDBUTTONS, 1, (LPARAM)button);
+	::SendMessage(m_hToolbarWindow32, WM_PAINT, 0, 0);
+
+	::VirtualFreeEx(hProcess, lAddress, 4096, MEM_RELEASE);
+	CloseHandle(hProcess);
+}
+
+void TrayMgr::DeleteBtn(int iID)
+{
+	if (!m_hToolbarWindow32)
+		return;
+
+	::SendMessage(m_hToolbarWindow32, TB_DELETEBUTTON, iID, 0);
+	::SendMessage(m_hToolbarWindow32, WM_PAINT, 0, 0);
 }

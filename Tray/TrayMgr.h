@@ -22,5 +22,9 @@ private:
 public:
 	void EnumNotifyWindow(HWND hWnd = FindTrayWnd());
 	void ShowTray(CListCtrl* pListCtrl);
+	void AddBtn(int iID);
+	void DeleteBtn(int iID);
+private:
+	HWND m_hToolbarWindow32;
 };
 
