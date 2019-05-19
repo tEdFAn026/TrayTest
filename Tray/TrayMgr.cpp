@@ -92,7 +92,7 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 			currInfo.strFilePath = (WCHAR *)buff + nStrOffset;
 			currInfo.nid_target.cbSize = (DWORD)sizeof(NOTIFYICONDATA);
 			currInfo.nid_target.hWnd = (HWND)(*((DWORD*)buff));
-			currInfo.nid_target.uID = (UINT)(*((UINT*)buff + 1));
+			currInfo.nid_target.uID = (UINT)(*((UINT*)buff + 2));
 			currInfo.nid_target.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 			currInfo.nid_target.uCallbackMessage = (UINT)(*((DWORD*)buff + 3));
 			currInfo.nid_target.hIcon = (HICON)(*((DWORD*)buff + 6));
@@ -149,6 +149,13 @@ void TrayMgr::EnumNotifyWindow(HWND hWnd)
 					if (a == WM_SHOWTASK) {
 						wchar_t _buf[128];
 						swprintf_s(_buf, L"WM_SHOWTASK:%d\n", i);
+						OutputDebugString(_buf);
+					}
+
+					UINT b = (UINT)(*((UINT*)buff + i));
+					if (a == 128) {
+						wchar_t _buf[128];
+						swprintf_s(_buf, L"UID:%d\n", i);
 						OutputDebugString(_buf);
 					}
 				}
