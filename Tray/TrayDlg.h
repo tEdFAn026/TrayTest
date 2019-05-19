@@ -31,6 +31,11 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+#ifdef _WIN64
+	afx_msg LRESULT OnTray(WPARAM wParam, LPARAM lParam);
+#else
+	afx_msg LRESULT OnTray(UINT nID, LPARAM lParam);
+#endif
 	DECLARE_MESSAGE_MAP()
 private:
 	TrayMgr m_tr;

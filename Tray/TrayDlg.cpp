@@ -68,6 +68,7 @@ BEGIN_MESSAGE_MAP(CTrayDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_TIMER()
+	ON_MESSAGE(WM_SHOWTASK, OnTray)
 	ON_BN_CLICKED(IDC_BUTTON_REFRESH, &CTrayDlg::OnBnClickedButtonRefresh)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, &CTrayDlg::OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CTrayDlg::OnBnClickedButtonDelete)
@@ -110,10 +111,10 @@ BOOL CTrayDlg::OnInitDialog()
 	m_TrayListCtrl.InsertColumn(0, L"图标", LVCFMT_LEFT, 38);
 	m_TrayListCtrl.InsertColumn(1, L"应用程序路径", LVCFMT_LEFT, 239);
 	m_TrayListCtrl.InsertColumn(2, L"提示信息", LVCFMT_LEFT, 170);
-
+	m_tr.m_hParent = m_hWnd;
 	m_tr.EnumNotifyWindow();
 	m_tr.ShowTray(&m_TrayListCtrl);
-
+	::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	SetTimer(0, 1000, NULL);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -165,6 +166,20 @@ void CTrayDlg::OnPaint()
 HCURSOR CTrayDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
+}
+
+#ifdef _WIN64
+LRESULT CTrayDlg::OnTray(WPARAM wParam, LPARAM lParam)
+#else
+LRESULT CTrayDlg::OnTray(UINT nID, LPARAM lParam)
+#endif
+{
+	//if (wParam != IDR_MAINFRAME)
+	//	return 1;
+
+	m_tr.SendMessage(nID, lParam);
+
+	return 0;
 }
 
 void CTrayDlg::OnTimer(UINT_PTR nIDEvent)
